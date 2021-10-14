@@ -1,3 +1,2 @@
-const moment = require("moment");
-const today = moment();
-console.log(today.format());
+// header day date and time using moment.js
+$("#currentDay").text(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
