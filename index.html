@@ -19,7 +19,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="CSS/style.css" />
-    <link rel= "script" href="JS/script.js">
+
     <title>Work Day Scheduler</title>
   </head>
 
@@ -28,18 +28,19 @@
     <header class="jumbotron">
       <h1 class="display-3">Work Day Scheduler</h1>
       <p class="lead">A simple calendar app for scheduling your work day</p>
-      <p id="currentDay" class="lead"></p>
+      <h2 class="date" id="date"></h2>
     </header>
     <div class="container">
-      
-      <!-- Timeblocks go here --> 
-    <div id="hours" class="row time-block">
-    <div class="col-md-1 hour">
-      09:00
+      <!-- Timeblocks go here -->
+      <div id="hours" class="row time-block">
+        <div class="col-md-1 hour">09:00</div>
+        <textarea class="col-md-10 inputtedactivites">
+Add tasks Here...</textarea
+        >
+        <button class="col-md-1 saveBtn"><i class="fas fa-archive"></i></button>
+      </div>
     </div>
-    <textarea class="col-md-10 inputtedactivites">Add tasks Here...</textarea>
-    <button class="col-md-1 saveBtn"><i class="fas fa-archive"></i></button>
-    <div class="col-md-1 hour">
+    <!-- < <div class="col-md-1 hour">
 
       10:00
     </div>
@@ -88,15 +89,10 @@
     <textarea class="col-md-10 inputtedactivites">Add tasks Here...</textarea>
     <button class="col-md-1 saveBtn"><i class="fas fa-archive"></i></button>
     <div class="col-md-1 hour">
-    </div>
-
+    </div> -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script> 
-    // "moment" global found here
-    const currentDay =moment();
-    console.log(currentDay.format("dddd, MMMM Do YYYY, h:mm:ss a"));
-    </script> 
+    <script src="JS/script.js"></script>
   </body>
 </html>
