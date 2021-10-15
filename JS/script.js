@@ -45,10 +45,27 @@ const timeBlockLabels = [
 ];
 
 // declare render timeblocks
-const renderTimeblocks = function () {};
+const renderTimeblocks = function () {
+  const callbackFn = function (element) {
+    // construct timeblock
+    const timeblock = `<div id="hours" class="row time-block">
+    <div class="col-md-1 hour">${element.timeBlockLabel}</div>
+    <textarea class="col-md-10 inputtedactivites">
+Add tasks Here...</textarea
+    >
+    <button class="col-md-1 saveBtn"><i class="fas fa-archive"></i></button>
+  </div>`;
+    return timeblock;
+  };
+
+  //map timeblock labels
+  const timeBlocks = timeBlockLabels.map(callbackFn).join("");
+  // append timeblocks to container
+  $(".container").append(timeBlocks);
+};
 // declare on load event handler function
 const onLoad = function () {
-  console.log("bob");
+  renderTimeblocks();
 };
 // add on load event listener
 $(document).ready(onLoad);
