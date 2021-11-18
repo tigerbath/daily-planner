@@ -1,71 +1,150 @@
-// // const getDateAndTime = document.getElementById("date");
-
-// const getDateAndTime = () => {
-//   let dateAndTime = moment().format("dddd, MMMM Do YYYY, h:mm a");
-//   dateElement.innerHTML = dateAndTime;
-// };
-// add global declarations
-const timeBlockLabels = [
+const workingHours = [
   {
-    timeBlockLabel: "09:00",
-    localStorageKey: 9,
+    hour: "09:00",
+    localStorageKey: "9",
   },
   {
-    timeBlockLabel: "10:00",
-    localStorageKey: 10,
+    hour: "10:00",
+    localStorageKey: "10",
   },
   {
-    timeBlockLabel: "11:00",
-    localStorageKey: 11,
+    hour: "11:00",
+    localStorageKey: "11",
   },
   {
-    timeBlockLabel: "12:00",
-    localStorageKey: 12,
+    hour: "12:00",
+    localStorageKey: "12",
   },
   {
-    timeBlockLabel: "13:00",
-    localStorageKey: 13,
+    hour: "13:00",
+    localStorageKey: "13",
   },
   {
-    timeBlockLabel: "14:00",
-    localStorageKey: 14,
+    hour: "14:00",
+    localStorageKey: "14",
   },
   {
-    timeBlockLabel: "15:00",
-    localStorageKey: 15,
+    hour: "15:00",
+    localStorageKey: "15",
   },
   {
-    timeBlockLabel: "16:00",
-    localStorageKey: 16,
+    hour: "16:00",
+    localStorageKey: "16",
   },
   {
-    timeBlockLabel: "17:00",
-    localStorageKey: 17,
+    hour: "17:00",
+    localStorageKey: "17",
   },
 ];
+const currentHour = moment().hour();
 
-// declare render timeblocks
-const renderTimeblocks = function () {
-  const callbackFn = function (element) {
-    // construct timeblock
-    const timeblock = `<div id="hours" class="row time-block">
-    <div class="col-md-1 hour">${element.timeBlockLabel}</div>
-    <textarea class="col-md-10 inputtedactivites">
-Add tasks Here...</textarea
-    >
-    <button class="col-md-1 saveBtn"><i class="fas fa-archive"></i></button>
-  </div>`;
-    return timeblock;
+const activitiesByHour = [];
+
+const onLoad = function () {
+  // on record load, check local storage
+  initializeLocalStorage();
+
+  //Render Clock
+  renderClock();
+
+  //Render Hour Block
+  constructHourBlocks();
+
+  renderEventDiary();
+};
+
+const initializeLocalStorage = function () {
+  const dataFromLS = localStorage.getItem("activitiesByHour");
+  if (!dataFromLS) {
+    localStorage.setItem("activitiesByHour", JSON.stringify({}));
+  }
+};
+
+const renderClock = function () {
+  function update() {
+    $("#clock").html(moment().format("DD MMMM YYYY <br> H:mm:ss"));
+  }
+  setInterval(update, 1000);
+};
+
+// Construct Hour Blocks
+const constructHourBlocks = function () {
+  for (let i = 0; i < workingHours.length; i++) {
+    const data = workingHours[i];
+    const userInput = $("<textarea/>");
+    const timeLabel = $("<label>", {
+      name: "time-label",
+      id: "time-label",
+      class: "time-of-day",
+    });
+    timeLabel.text(data.hour);
+
+    const saveBtn = $("<button/>", {
+      text: "Save Event",
+      id: data.localStorageKey,
+      class: "saveBtn",
+    });
+    const eventContainer = $("<div>", {
+      class: `event-container ${getTimeBlockClassName(
+        parseInt(data.localStorageKey)
+      )}`,
+    });
+
+    eventContainer.attr("data-time", data.localStorageKey);
+    eventContainer.append(timeLabel, userInput, saveBtn);
+    const container = $("#container");
+    container.append(eventContainer);
+  }
+
+  const saveData = function (event) {
+    if ($(event.target).is("button")) {
+      const timeOfEvent = $(event.target).attr("id");
+      const userInput = $(event.target).prev().val();
+      const dataFromLocalStorage = JSON.parse(
+        localStorage.getItem("activitiesByHour")
+      );
+      dataFromLocalStorage[timeOfEvent] = userInput;
+      localStorage.setItem(
+        "activitiesByHour",
+        JSON.stringify(dataFromLocalStorage)
+      );
+    }
   };
 
-  //map timeblock labels
-  const timeBlocks = timeBlockLabels.map(callbackFn).join("");
-  // append timeblocks to container
-  $(".container").append(timeBlocks);
+  $("#container").click(saveData);
 };
-// declare on load event handler function
-const onLoad = function () {
-  renderTimeblocks();
+
+const getTimeBlockClassName = function (hour) {
+  if (hour > currentHour) {
+    return "future";
+  } else if (hour === currentHour) {
+    return "present";
+  } else {
+    return "past";
+  }
 };
-// add on load event listener
-$(document).ready(onLoad);
+
+const renderEventDiary = function () {
+  const dataFromLocalStorage = JSON.parse(
+    localStorage.getItem("activitiesByHour")
+  );
+
+  const renderText = function (index) {
+    const hour = $(this).next().attr("id");
+    if (dataFromLocalStorage.hasOwnProperty(hour)) {
+      $(this).text(dataFromLocalStorage[hour]);
+    }
+  };
+
+  $("textarea").each(renderText);
+};
+
+const clearLS = function (event) {
+  console.log(event.target);
+  localStorage.clear();
+  window.location.reload();
+};
+
+$("#clear-ls").click(clearLS);
+
+window.addEventListener("load", onLoad);
